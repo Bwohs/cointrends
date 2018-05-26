@@ -3,8 +3,79 @@
 <head>
     <title>CoinTrends - Błażej Wohs</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+        <link rel="stylesheet" href="css/font-awesome.min.css" />
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/tempusdominus-bootstrap-4.css" />
+
+        <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/popper.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/moment-with-locales.min.js"></script>
+        <script type="text/javascript" src="js/tempusdominus-bootstrap-4.js"></script>
 </head>
 <body>
-    Strona główna
+    <p th:text="${start}"></p>
+    <p th:text="${stop}"></p>
+    <br/>
+    
+        <div class='col-md-5'>
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-md-5'>
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script th:inline="javascript">
+
+		      /*<![CDATA[*/
+			    
+		         var start = /*[[${start}]]*/;
+		         var stop = /*[[${stop}]]*/;
+		
+		       /*]]>*/
+		</script> 
+        
+        <script type="text/javascript">
+            
+            var DatatimepickerDefaultOptions = {
+                format: 'YYYY-MM-DD HH:mm:ss',
+                useCurrent: false,
+            }
+            
+            
+            $(function () {
+                $('#datetimepicker1').datetimepicker(DatatimepickerDefaultOptions);
+                $('#datetimepicker2').datetimepicker(DatatimepickerDefaultOptions);
+                
+                $('#datetimepicker1').datetimepicker('minDate', start);
+                $('#datetimepicker2').datetimepicker('maxDate', stop);
+                
+                $("#datetimepicker1").on("change.datetimepicker", function (e) {
+                    $('#datetimepicker2').datetimepicker('minDate', e.date);
+                });
+                $("#datetimepicker2").on("change.datetimepicker", function (e) {
+                    $('#datetimepicker1').datetimepicker('maxDate', e.date);
+                });
+            });
+        </script>
+        
+
+    
+    
 </body>
 </html>
