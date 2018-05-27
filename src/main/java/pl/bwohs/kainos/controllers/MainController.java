@@ -24,11 +24,11 @@ public class MainController {
 		
 		List<CurrencyStatisticsModel> btcusdList = bitcoinAverageDAO.getCurrencyHistoricalData(CurrencyEnum.BTCUSD);
 		
-		LocalDateTime start = btcusdList.get(btcusdList.size()-1).getTime();
-		LocalDateTime stop = btcusdList.get(0).getTime();
+		LocalDateTime minDataTime = btcusdList.get(btcusdList.size()-1).getTime();
+		LocalDateTime maxDateTime = btcusdList.get(0).getTime();
 		
-		model.addAttribute("start", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(start));
-		model.addAttribute("stop", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(stop));
+		model.addAttribute("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(minDataTime));
+		model.addAttribute("maxDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(maxDateTime));
 		
 		
 		return "home";

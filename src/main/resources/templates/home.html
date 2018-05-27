@@ -15,8 +15,8 @@
         <script type="text/javascript" src="js/tempusdominus-bootstrap-4.js"></script>
 </head>
 <body>
-    <p th:text="${start}"></p>
-    <p th:text="${stop}"></p>
+    <p th:text="${minDateTime}"></p>
+    <p th:text="${maxDateTime}"></p>
     <br/>
     
         <div class='col-md-5'>
@@ -44,8 +44,8 @@
 
 		      /*<![CDATA[*/
 			    
-		         var start = /*[[${start}]]*/;
-		         var stop = /*[[${stop}]]*/;
+		         var minDateTime = /*[[${minDateTime}]]*/;
+		         var maxDateTime = /*[[${maxDateTime}]]*/;
 		
 		       /*]]>*/
 		</script> 
@@ -62,8 +62,8 @@
                 $('#datetimepicker1').datetimepicker(DatatimepickerDefaultOptions);
                 $('#datetimepicker2').datetimepicker(DatatimepickerDefaultOptions);
                 
-                $('#datetimepicker1').datetimepicker('minDate', start);
-                $('#datetimepicker2').datetimepicker('maxDate', stop);
+                $('#datetimepicker1').datetimepicker('minDate', minDateTime);
+                $('#datetimepicker2').datetimepicker('maxDate', maxDateTime);
                 
                 $("#datetimepicker1").on("change.datetimepicker", function (e) {
                     $('#datetimepicker2').datetimepicker('minDate', e.date);

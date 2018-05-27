@@ -1,6 +1,10 @@
 package pl.bwohs.kainos.dao;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -25,6 +29,20 @@ public class BitcoinAverageDAO {
 		List<CurrencyStatisticsModel> currencyList = response.getBody();
 		
 		return currencyList;
+		
+	}
+	
+	public LocalDateTime getServerTime() {
+		
+		String urlRequest = "https://apiv2.bitcoinaverage.com/constants/time";
+		
+		RestTemplate restTemplate = new RestTemplate();
+		
+		Map<String, Object> res = restTemplate.getForObject(urlRequest, Map.class, new HashMap<>());
+		
+		LocalDateTime serverTime = LocalDateTime.parse((CharSequence) res.get("iso"));
+		
+		return serverTime;
 		
 	}
 

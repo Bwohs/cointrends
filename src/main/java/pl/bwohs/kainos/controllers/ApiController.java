@@ -7,12 +7,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import pl.bwohs.kainos.dao.BitcoinAverageDAO;
+import pl.bwohs.kainos.dto.DateTimeRangeForm;
 import pl.bwohs.kainos.enums.CurrencyEnum;
 import pl.bwohs.kainos.models.CurrenciesModel;
 import pl.bwohs.kainos.models.CurrencyStatisticsModel;
@@ -23,10 +28,13 @@ import pl.bwohs.kainos.models.CurrencyStatisticsModel;
 public class ApiController {
 
 	@Autowired
-	BitcoinAverageDAO bitcoinAverageDAO;
+	private BitcoinAverageDAO bitcoinAverageDAO;
 	
-	@GetMapping(value="/historical/start/{start}/stop/{stop}")
-	public ResponseEntity<?> getCurrenciesHistoricalData(@PathVariable String start, @PathVariable String stop){
+	@CrossOrigin
+	@GetMapping(value="/historical/start/{start}/end/{end}")
+	public ResponseEntity<?> getCurrenciesHistoricalData(
+			@Validated DateTimeRangeForm DTRFrom,
+			BindingResult result){
 
 		List<CurrencyStatisticsModel> btcusdList = bitcoinAverageDAO.getCurrencyHistoricalData(CurrencyEnum.BTCUSD);
 		List<CurrencyStatisticsModel> ethusdList = bitcoinAverageDAO.getCurrencyHistoricalData(CurrencyEnum.ETHUSD);
@@ -37,6 +45,15 @@ public class ApiController {
 		currenciesList.add(ethusdList);
 		currenciesList.add(ltcusdList);
 		
+		System.out.println(DTRFrom.toString());
+		
+		
+		if (result.hasErrors()) {
+			System.out.println("Errors:");
+			System.out.println(result);
+		}
+		
+		System.out.println("Server time: " + bitcoinAverageDAO.getServerTime());
 		
 		return new ResponseEntity<>(currenciesList, HttpStatus.OK);
 
