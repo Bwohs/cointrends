@@ -12,23 +12,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import pl.bwohs.kainos.dao.BitcoinAverageDAO;
 import pl.bwohs.kainos.enums.CurrencyEnum;
 import pl.bwohs.kainos.models.CurrencyStatisticsModel;
+import pl.bwohs.kainos.services.CryptocurrenciesService;
 
 @Controller
 public class MainController {
 	
 	@Autowired
-	BitcoinAverageDAO bitcoinAverageDAO;
+	CryptocurrenciesService cryptocurrenciesService;
 	
 	@GetMapping(value= {"/","/home"})
 	public String getHomePage(Model model) {
 		
-		List<CurrencyStatisticsModel> btcusdList = bitcoinAverageDAO.getCurrencyHistoricalData(CurrencyEnum.BTCUSD);
+		cryptocurrenciesService.checkIfCurrent();
 		
-		LocalDateTime minDataTime = btcusdList.get(btcusdList.size()-1).getTime();
-		LocalDateTime maxDateTime = btcusdList.get(0).getTime();
 		
-		model.addAttribute("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(minDataTime));
-		model.addAttribute("maxDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(maxDateTime));
+		model.addAttribute("minDateTime", cryptocurrenciesService.getMinDateTimeSpaceSep());
+		model.addAttribute("maxDateTime", cryptocurrenciesService.getBitcoinAverageAPIServerTimeSpaceSep());
 		
 		
 		return "home";
