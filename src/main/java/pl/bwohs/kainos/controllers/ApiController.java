@@ -3,6 +3,7 @@ package pl.bwohs.kainos.controllers;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,21 +49,14 @@ public class ApiController {
 		DTRFValidator.validate(DTRFrom, result);
 
 		if (result.hasErrors()) {
-			System.out.println("Validations erros [" + result.getErrorCount() + "]");
-		    List<String> errors = new LinkedList<String>();
-		    for (FieldError error : result.getFieldErrors() ) {
-		        errors.add("\t Field '" + error.getField() + "', message '" + error.getDefaultMessage() + "', rejected value '" + error.getRejectedValue() + "'");
-
-		    }
-	
-		    for (String error : errors) {
-					System.out.println(error);
-			}
 		    return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}else {
 			cryptocurrenciesService.checkIfCurrent();
 			
-			return new ResponseEntity<>(cryptocurrenciesService.getCryptocurrencies(), HttpStatus.OK);
+			Map<CurrencyEnum, List<CurrencyStatisticsModel>> limitedCurrenciesData = cryptocurrenciesService.getCryptocurrenciesFromTo(DTRFrom.getStart(), DTRFrom.getEnd());
+			
+
+			return new ResponseEntity<>(limitedCurrenciesData, HttpStatus.OK);
 		}
 		
 	}

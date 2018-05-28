@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -103,6 +104,20 @@ public class CryptocurrenciesService {
 	public String getBitcoinAverageAPIServerTimeSpaceSep() {
 		return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(this.getBitcoinAverageAPIServerTime());
 		
+	}
+	
+	public Map<CurrencyEnum, List<CurrencyStatisticsModel>> getCryptocurrenciesFromTo(LocalDateTime start, LocalDateTime end) {
+		Map<CurrencyEnum, List<CurrencyStatisticsModel>> results = new HashMap<CurrencyEnum,List<CurrencyStatisticsModel>>();
+		
+
+		cryptocurrencies.forEach((key,value) -> {
+			results.put(key, 
+					value.stream().
+					filter( p -> (p.getTime().isAfter(start) && p.getTime().isBefore(end)) || p.getTime().isEqual(start) || p.getTime().isEqual(end))
+					.collect(Collectors.toList()));
+		});
+		
+		return results;
 	}
 
 }
