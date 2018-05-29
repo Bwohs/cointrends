@@ -7,38 +7,71 @@
         <link rel="stylesheet" href="css/font-awesome.min.css" />
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/tempusdominus-bootstrap-4.css" />
+        <link rel="stylesheet" href="css/main.css" />
 
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="js/popper.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/moment-with-locales.min.js"></script>
         <script type="text/javascript" src="js/tempusdominus-bootstrap-4.js"></script>
+        
+        <script type="text/javascript" src="js/Chart.js"></script>
+        <script type="text/javascript" src="js/chartjs-plugin-zoom.min.js"></script>
 </head>
 <body>
     <p th:text="${minDateTime}"></p>
     <p th:text="${maxDateTime}"></p>
     <br/>
     
-        <div class='col-md-5'>
+    <div class="container mt-5 mb-2">
+    <div class="row">
+        <div class='col-md-7 m-auto'>
             <div class="form-group">
+                <label for="datetimepicker1input">
+                    Start date time:
+                </label>
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                    <input id="datetimepicker1input" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                 </div>
+                <div id="datetimepicker1Errors" class="datetime-errors-list">
+                    <span>Start date time input errors:</span>
+                    <ul></ul>
+                </div>
             </div>
         </div>
-        <div class='col-md-5'>
+        </div>
+        <div class="row">
+            <div class='col-md-7 m-auto'>
             <div class="form-group">
+                <label for="datetimepicker2input">
+                    End date time:
+                </label>
                 <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                    <input id="datetimepicker2input" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
                     <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                 </div>
+                <div id="datetimepicker2Errors" class="datetime-errors-list">
+                    <span>End date time input errors:</span>
+                    <ul></ul>
+                </div>
             </div>
         </div>
+        </div>
+    <div class="row">
+        <div class=' m-auto'>
+            <button id="updateButton" type="button" class="btn btn-primary">Update chart</button>
+        </div>
+    </div>
+        <div class="chart-container">
+            <button id="resetButton" type="button" class="btn warning mx-2 button-reset">Zoom reset</button>
+            <canvas id="cryptocurrenciesChart"></canvas>
+        </div>
+	</div>
         
         <script th:inline="javascript">
 
@@ -49,33 +82,7 @@
 		
 		       /*]]>*/
 		</script> 
-        
-        <script type="text/javascript">
-            
-            var DatatimepickerDefaultOptions = {
-                format: 'YYYY-MM-DD HH:mm:ss',
-                useCurrent: false,
-            }
-            
-            
-            $(function () {
-                $('#datetimepicker1').datetimepicker(DatatimepickerDefaultOptions);
-                $('#datetimepicker2').datetimepicker(DatatimepickerDefaultOptions);
-                
-                $('#datetimepicker1').datetimepicker('minDate', minDateTime);
-                $('#datetimepicker2').datetimepicker('maxDate', maxDateTime);
-                
-                $("#datetimepicker1").on("change.datetimepicker", function (e) {
-                    $('#datetimepicker2').datetimepicker('minDate', e.date);
-                });
-                $("#datetimepicker2").on("change.datetimepicker", function (e) {
-                    $('#datetimepicker1').datetimepicker('maxDate', e.date);
-                });
-            });
-        </script>
-        
-
-    
-    
+        <script type="text/javascript" src="js/main.js"></script>
+       
 </body>
 </html>
