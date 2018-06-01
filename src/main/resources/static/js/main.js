@@ -118,20 +118,51 @@ $(function () {
             return;
         }
 
-        console.log("Validation ok");
+        console.log("Frontend validation ok");
         var datetimeStartReplacedSpace = ReplaceSpaceInDateTime(datetimeStart);
         var datetimeEndReplacedSpace = ReplaceSpaceInDateTime(datetimeEnd);
 
         var apiUrl = "http://localhost:8080/kainos/api/historical/start/" + datetimeStartReplacedSpace + "/end/" + datetimeEndReplacedSpace;
-        console.log(apiUrl);
-        //                    $.ajax({
-        //                        url : apiUrl,
-        //                        success : function(data) {
-        //
-        //
-        //                        }
-        //
-        //                    });
+
+        var overlay = $('#overlay');
+        $(overlay).show();
+        
+        $.ajax({
+            url : apiUrl,
+            success : function(currenciesData) {
+
+                currenciesData = JSON.parse(JSON.stringify(currenciesData).split('"time":').join('"x":'));
+                currenciesData = JSON.parse(JSON.stringify(currenciesData).split('"average":').join('"y":'))
+
+                for (var currency in currenciesData) {
+                    if( currenciesData.hasOwnProperty(currency) ) {
+                        for(var i = 0; i < cryptocurrenciesChart.data.datasets.length; i++){
+                            if(cryptocurrenciesChart.data.datasets[i].label == currency){
+                                cryptocurrenciesChart.data.datasets[i].data = currenciesData[currency];
+                                break;
+                            }
+                        }
+                    } 
+                }
+                
+//                for (var index = 0; index < cryptocurrenciesChart.data.datasets.length; ++index) {
+//                    if (typeof cryptocurrenciesChart.data.datasets[index].data[0] === 'object') {
+//                        console.log("if");
+//                        cryptocurrenciesChart.data.datasets[index].data.push({
+//                            x: newDate(cryptocurrenciesChart.data.datasets[index].data.length),
+//                            y: index+3,
+//                        });
+//                    }else {
+//                        console.log("not if"); 
+//                    }
+//                }
+
+                cryptocurrenciesChart.update();
+                
+                $(overlay).hide();
+            }
+
+        });
 
     });
 
@@ -142,126 +173,138 @@ $(function () {
 //                                        Charts
 //*****************************************************************************
 var cryptocurrenciesChartOpts = {
-    type: 'line',
-    data: {
-        labels: [],
-        datasets: [{ 
-            data: [], //here data for first data-set separated by comma
-            label: "BTCUSD",
-            borderColor: "#F8A034",
-            backgroundColor: "#F8A034",
-            fill: false,
-            pointRadius: 0,
-            pointHitRadius: 10,
-            pointHoverRadius: 4,
-            borderWidth: 1,
-        },{ 
-            data: [], //here data for first data-set separated by comma
-            label: "ETHUSD",
-            borderColor: "#2F3030",
-            backgroundColor: "#2F3030",
-            fill: false,
-            pointRadius: 0,
-            pointHitRadius: 10,
-            pointHoverRadius: 4,
-            borderWidth: 1,
-        },{ 
-            data: [], //here data for first data-set separated by comma
-            label: "LTCUSD",
-            borderColor: "#838383",
-            backgroundColor: "#838383",
-            fill: false,
-            pointRadius: 0,
-            pointHitRadius: 10,
-            pointHoverRadius: 4,
-            borderWidth: 1,
-        }]
-    },
-    options: {
-        responsive:true,
-        maintainAspectRatio: false,
-        legend: {
-            display: true,
-            labels: {
-                fontSize: 15,
-            }
-        },
-        title: {
-            display: true,
-            fontSize: 25,
-            text: 'Cryptocurrencies' //title of chart
-        },
-        scales: {
-            xAxes: [{
-                display: true,
-                type: 'time',
-                distribution: 'linear',
-                time: {
-                    displayFormats: {
-                        millisecond: 'HH:mm:ss',
-                        second: 'HH:mm:ss',
-                        minute: 'HH:mm',
-                        hour: 'DD HH:mm',
-                        day: 'MM-DD HH',
-                        month: 'YYYY-MM-DD',
-                    },
-                    //                  format: 'YYYY/MM/DD HH:mm:ss',  
-                },
-                scaleLabel: {
-                    display: true,
-                    fontSize: 20,
-                    labelString: 'Time' //label for x-axis
-                }
-            }],
-            yAxes: [{
-                display: true,
-                type: 'logarithmic',
-//                ticks: {
-//                    suggestedMin: 0,    //min value of y-axis
-//                    suggestedMax: 40    //max value of y-axis
-//                },
-                scaleLabel: {
-                    display: true,
-                    fontSize: 20,
-                    labelString: 'Value' //label for y-axis
-                }
-            }]
-        },
-        zoom: {
-            enabled: true,
-            drag: true,
-            mode: 'x',
-            limits: {
-                max: 10,
-                min: 0.5
-            }
-        },
-        tooltips: {
-            enabled: true,
-            mode: 'index',
-            position: 'nearest',
-            intersect: false,
-            caretPadding: 40,
-        },
-        elements: {
-            line: {
-                tension: 0, // disables bezier curves
-            }
-        },
-        animation: {
-            duration: 0, // general animation time
-        },
-        hover: {
-            animationDuration: 0, // duration of animations when hovering an item
-        },
-        responsiveAnimationDuration: 0, // animation duration after a resize
-    }
-};
+	    type: 'line',
+	    data: {
+	        labels: [],
+	        datasets: [{ 
+	            data: [{}], //here data for first data-set separated by comma
+	            label: "BTCUSD",
+	            borderColor: "#F8A034",
+	            backgroundColor: "#F8A034",
+	            fill: false,
+	            pointRadius: 0,
+	            pointHitRadius: 10,
+	            pointHoverRadius: 4,
+	            borderWidth: 1,
+	        },{ 
+	            data: [{}], //here data for first data-set separated by comma
+	            label: "ETHUSD",
+	            borderColor: "#2F3030",
+	            backgroundColor: "#2F3030",
+	            fill: false,
+	            pointRadius: 0,
+	            pointHitRadius: 10,
+	            pointHoverRadius: 4,
+	            borderWidth: 1,
+	        },{ 
+	            data: [{}], //here data for first data-set separated by comma
+	            label: "LTCUSD",
+	            borderColor: "#838383",
+	            backgroundColor: "#838383",
+	            fill: false,
+	            pointRadius: 0,
+	            pointHitRadius: 10,
+	            pointHoverRadius: 4,
+	            borderWidth: 1,
+	        }]
+	    },
+	    options: {
+	        responsive:true,
+	        maintainAspectRatio: false,
+	        legend: {
+	            display: true,
+	            labels: {
+	                fontSize: 15,
+	            }
+	        },
+	        title: {
+	            display: true,
+	            fontSize: 25,
+	            text: 'Cryptocurrencies' //title of chart
+	        },
+	        scales: {
+	            xAxes: [{
+	                display: true,
+	                type: 'time',
+	                distribution: 'linear',
+	                time: {
+	                    displayFormats: {
+	                        millisecond: 'HH:mm:ss',
+	                        second: 'HH:mm:ss',
+	                        minute: 'HH:mm',
+	                        hour: 'DD HH:mm',
+	                        day: 'MM-DD HH',
+	                        month: 'YYYY-MM-DD',
+	                    },
+	                    //                  format: 'YYYY/MM/DD HH:mm:ss',  
+	                },
+	                scaleLabel: {
+	                    display: true,
+	                    fontSize: 20,
+	                    labelString: 'Time' //label for x-axis
+	                }
+	            }],
+	            yAxes: [{
+	                display: true,
+	                type: 'logarithmic',
+	                position: 'right',
+	                ticks: {
+//	                    suggestedMin: 0,    //min value of y-axis
+//	                    suggestedMax: 40,    //max value of y-axis
+	                        callback: function(...args) {
+	                        const value = Chart.Ticks.formatters.logarithmic.call(this, ...args);
+	                        if (value.length) {
+	                            return Number(value).toLocaleString()
+	                        }
+	                        return value;
+	                    }
+	                },
+	                scaleLabel: {
+	                    display: true,
+	                    fontSize: 20,
+	                    labelString: 'Value' //label for y-axis
+	                }
+	            }]
+	        },
+	        zoom: {
+	            enabled: true,
+	            drag: true,
+	            mode: 'x',
+	            limits: {
+	                max: 10,
+	                min: 0.5
+	            }
+	        },
+	        tooltips: {
+	            enabled: true,
+	            mode: 'index',
+	            position: 'nearest',
+	            intersect: false,
+	            caretPadding: 40,
+	        },
+	        elements: {
+	            line: {
+	                tension: 0, // disables bezier curves
+	            }
+	        },
+	        animation: {
+	            duration: 0, // general animation time
+	        },
+	        hover: {
+	            animationDuration: 0, // duration of animations when hovering an item
+	        },
+	        responsiveAnimationDuration: 0, // animation duration after a resize
+	    }
+	};
 
 var cryptocurrenciesChart;
 
 $(function () {
+    $('[data-toggle="tooltip"]').tooltip({
+        trigger : 'hover'
+    });
     cryptocurrenciesChart = new Chart($('#cryptocurrenciesChart'), cryptocurrenciesChartOpts);
+    
 });
 
 

@@ -23,7 +23,14 @@
     <p th:text="${maxDateTime}"></p>
     <br/>
     
-    <div class="container mt-5 mb-2">
+        <div class="container mt-5 mb-2" style="position: relative">
+        <div id="overlay" class="overlay">
+            <div class="loader-center">
+                <div class="loader-wrapper">
+                    <div class="loader"></div>
+                </div>
+            </div>
+        </div>
     <div class="row">
         <div class='col-md-7 m-auto'>
             <div class="form-group">
@@ -68,10 +75,10 @@
         </div>
     </div>
         <div class="chart-container">
-            <button id="resetButton" type="button" class="btn warning mx-2 button-reset">Zoom reset</button>
+            <button id="resetButton" type="button" class="btn warning mx-2 button-reset" data-toggle="tooltip" data-placement="top" title="You can zoom chart in horizontal axis by clicking and moving left mouse button. Click this button to reset zoom.">Zoom reset</button>
             <canvas id="cryptocurrenciesChart"></canvas>
         </div>
-	</div>
+</div>
         
         <script th:inline="javascript">
 

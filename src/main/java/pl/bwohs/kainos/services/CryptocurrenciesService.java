@@ -36,6 +36,9 @@ public class CryptocurrenciesService {
 	@Value("#{${historical.data.interval} * ${historical.data.intervalFactor}}")
 	private long historicalDataInterval;
 	
+	@Value("${trend.timespan}")
+	private long trendTimespan;
+	
 //**********************************************************************************
 //	Getters & Setters
 	public LocalDateTime getLastDataTime() {
@@ -112,12 +115,37 @@ public class CryptocurrenciesService {
 
 		cryptocurrencies.forEach((key,value) -> {
 			results.put(key, 
-					value.stream().
-					filter( p -> (p.getTime().isAfter(start) && p.getTime().isBefore(end)) || p.getTime().isEqual(start) || p.getTime().isEqual(end))
+					value.stream()
+					.filter( p -> (p.getTime().isAfter(start) && p.getTime().isBefore(end)) || p.getTime().isEqual(start) || p.getTime().isEqual(end))
 					.collect(Collectors.toList()));
 		});
 		
+		calculateTrendLine(start,end);
+		
 		return results;
+	}
+	
+	private void calculateTrendLine(LocalDateTime scopeStart, LocalDateTime scopeEnd) {
+		
+		System.out.println("Start scope: " + scopeStart + ", end scope: " + scopeEnd);
+		
+		LocalDateTime end = scopeEnd;
+		LocalDateTime start = end.minusSeconds(trendTimespan);
+		while(start.isAfter(scopeStart) || start.isEqual(scopeStart)) {
+			System.out.println("Start: " + start + ", end: " + end);
+			
+			
+			
+			
+			
+			end = start;
+			start = end.minusSeconds(trendTimespan);
+		}
+		
+		
+
+
+		
 	}
 
 }
