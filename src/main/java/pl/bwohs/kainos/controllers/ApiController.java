@@ -1,6 +1,9 @@
 package pl.bwohs.kainos.controllers;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +23,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import pl.bwohs.kainos.dao.BitcoinAverageDAO;
 import pl.bwohs.kainos.dto.DateTimeRangeForm;
 import pl.bwohs.kainos.enums.CurrencyEnum;
-import pl.bwohs.kainos.models.CurrenciesModel;
+import pl.bwohs.kainos.enums.SlopeEnum;
 import pl.bwohs.kainos.models.CurrencyStatisticsModel;
+import pl.bwohs.kainos.models.CurrencyTrendDependencyModel;
+import pl.bwohs.kainos.models.CurrencyTrendModel;
+import pl.bwohs.kainos.models.ICurrency;
 import pl.bwohs.kainos.services.CryptocurrenciesService;
+import pl.bwohs.kainos.utilities.Json;
 import pl.bwohs.kainos.validators.DateTimeRangeFormValidator;
 
 
@@ -58,6 +67,33 @@ public class ApiController {
 
 			return new ResponseEntity<>(limitedCurrenciesData, HttpStatus.OK);
 		}
+		
+	}
+	
+	@CrossOrigin
+	@GetMapping(value="/historical1/start/{start}/end/{end}")
+	public ResponseEntity<?> test(
+			@ModelAttribute DateTimeRangeForm DTRFrom,
+			BindingResult result) {
+		
+		DTRFValidator.validate(DTRFrom, result);
+
+		if (result.hasErrors()) {
+		    return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
+		}else {
+			cryptocurrenciesService.checkIfCurrent();
+			
+//			Map<CurrencyEnum, List<CurrencyStatisticsModel>> limitedCurrenciesData = cryptocurrenciesService.getCryptocurrenciesFromTo(DTRFrom.getStart(), DTRFrom.getEnd());
+			
+			String jsonData= cryptocurrenciesService.getJsonData(DTRFrom.getStart(), DTRFrom.getEnd());
+	
+			JsonNode jsonObject = Json.stringToJsonObject(jsonData);
+			
+
+//			return new ResponseEntity<>(limitedCurrenciesData, HttpStatus.OK);
+			return new ResponseEntity<>(jsonObject, HttpStatus.OK);
+		}
+
 		
 	}
 	
