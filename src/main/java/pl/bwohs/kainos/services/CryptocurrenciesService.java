@@ -198,7 +198,7 @@ public class CryptocurrenciesService {
 		trendsLimited.forEach((key,value)->{
 			
 			Optional<CurrencyTrendModel> effect = value.stream()
-													.filter( x -> x.getOldestMeasureTime().isEqual(item.getOldestMeasureTime()))
+													.filter( x -> x.getT1().isEqual(item.getT1()) && x.getT2().isEqual(item.getT2()))
 													.findAny();
 			if (effect.isPresent()) {
 				effects.put(key, effect.get().getSlope());
@@ -243,8 +243,6 @@ public class CryptocurrenciesService {
 			System.out.println("Update start: " + LocalDateTime.now() + "");
 			this.updateCryptocurrencies();
 			System.out.println("Update end: " + LocalDateTime.now() + "");
-		}else {
-			System.out.println("No update needed!");
 		}
 	}
 	
