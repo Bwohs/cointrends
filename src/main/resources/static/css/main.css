@@ -1,3 +1,8 @@
+#main-content {
+    padding: 10px 20px;
+    box-shadow: 12px 0 15px -4px #7c7c7c, -12px 0 8px -4px #7c7c7c;
+}
+
 .datetime-errors-list{
     display: none;
     border: 3px solid red;
@@ -61,4 +66,44 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+#trend-boxes {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.trend-box {
+    padding: 5px;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.trend-box:hover {
+    background: #b4b1b1;
+}
+
+.arrow-container img{
+    width: 100%;
+    height: auto;
+    max-height: 60px;
+    max-width: 60px;
+}
+
+.arrow-desription {
+    max-width: 250px;
+}
+
+.arrow-desription .title {
+    font-weight: bold;
+    padding: 0px 10px 0px;
+    margin: 0;
+}
+
+.arrow-desription .description {
+    padding: 0px 10px 0px;
+    margin: 0;
+    max-width: 100%;
 }
