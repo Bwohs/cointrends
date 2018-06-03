@@ -19,101 +19,104 @@
         <script type="text/javascript" src="js/chartjs-plugin-zoom.min.js"></script>
 </head>
     <body>
-    <div id="main-content" class="container mt-5 mb-2" style="position: relative">
-        <div>
-            <h1 class="text-center">CoinTrends</h1>
-            <p>
-                CoinTrends is an application which verifies whether growths or drops of BITCOIN currency value in USD were preceded growths or drops of any other cryptocurrencies values in USD.
-            </p>
-            <p class="mb-0">
-                Application allows comparison of historical data of:
-            </p>
-            <ul>
-                <li>BTCUSD (bitcoin in USD),</li>
-                <li>ETHUSD (Ethereum in USD),</li>
-                <li>LTCUSD (Litcoin in USD)</li>
-            </ul>
-            <p class="mb-0">
-                In addition, the chart displays the trend line for the listed cryptocurrencies:
-            </p>
-            <ul>
-                <li>weekly growth trends are marked by the <span style="color: blue; font-weight: bold;">blue</span> line on the chart,</li>
-                <li>weekly drop trends are marked by the <span style="color: red; font-weight: bold;">red</span> line on the chart.</li>
-            </ul>
-            <h2>Author: Błażej Wohs</h2>
-            <p class="mb-0 h5">How to use:</p>
-            <ol>
-                <li>Write (or pick) start date time</li>
-                <li>Write (or pick) end date time</li>
-                <li>Click <b><i>"Update chart"</i></b> button</li>
-                <li>Wait for the chart to load</li>
-            </ol>
-        </div>
-        <div style="position: relative">
-            <div id="overlay" class="overlay">
-                <div class="loader-center">
-                    <div class="loader-wrapper">
-                        <div class="loader"></div>
+        <div id="main-content" class="container mt-5 mb-2" style="position: relative">
+            <div>
+                <h1 class="text-center">CoinTrends</h1>
+                <p>
+                    CoinTrends is an application which verifies whether growths or drops of BITCOIN currency value in USD were preceded growths or drops of any other cryptocurrencies values in USD.
+                </p>
+                <p class="mb-0">
+                    Application allows comparison of historical data of:
+                </p>
+                <ul>
+                    <li>BTCUSD (bitcoin in USD),</li>
+                    <li>ETHUSD (Ethereum in USD),</li>
+                    <li>LTCUSD (Litcoin in USD)</li>
+                </ul>
+                <p class="mb-0">
+                    In addition, the chart displays the trend line for the listed cryptocurrencies:
+                </p>
+                <ul>
+                    <li>weekly growth trends are marked by the <span style="color: blue; font-weight: bold;">blue</span> line on the chart,</li>
+                    <li>weekly drop trends are marked by the <span style="color: red; font-weight: bold;">red</span> line on the chart.</li>
+                </ul>
+                <h2>Author: Błażej Wohs</h2>
+                <p class="mb-0 h5">How to use:</p>
+                <ol>
+                    <li>Write (or pick) start date time</li>
+                    <li>Write (or pick) end date time</li>
+                    <li>Click <b><i>"Update chart"</i></b> button</li>
+                    <li>Wait for the chart to load</li>
+                </ol>
+            </div>
+            <div style="position: relative">
+                <div id="overlay" class="overlay">
+                    <div class="loader-center">
+                        <div class="loader-wrapper">
+                            <div class="loader"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class='col-md-7 m-auto'>
-                    <div class="form-group">
-                        <label for="datetimepicker1input">
-                            Start date time:
-                        </label>
-                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                            <input id="datetimepicker1input" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
-                            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                <div class="row">
+                    <div class='col-md-7 m-auto'>
+                        <div class="form-group">
+                            <label for="datetimepicker1input">
+                                Start date time:
+                            </label>
+                            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                <input id="datetimepicker1input" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            <div id="datetimepicker1Errors" class="datetime-errors-list">
+                                <span>Start date time input errors:</span>
+                                <ul></ul>
                             </div>
                         </div>
-                        <div id="datetimepicker1Errors" class="datetime-errors-list">
-                            <span>Start date time input errors:</span>
-                            <ul></ul>
-                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class='col-md-7 m-auto'>
-                    <div class="form-group">
-                        <label for="datetimepicker2input">
-                            End date time:
-                        </label>
-                        <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                            <input id="datetimepicker2input" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
-                            <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                <div class="row">
+                    <div class='col-md-7 m-auto'>
+                        <div class="form-group">
+                            <label for="datetimepicker2input">
+                                End date time:
+                            </label>
+                            <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                <input id="datetimepicker2input" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                                <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            <div id="datetimepicker2Errors" class="datetime-errors-list">
+                                <span>End date time input errors:</span>
+                                <ul></ul>
                             </div>
                         </div>
-                        <div id="datetimepicker2Errors" class="datetime-errors-list">
-                            <span>End date time input errors:</span>
-                            <ul></ul>
-                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class='m-auto'>
-                    <button id="updateButton" type="button" class="btn btn-primary">Update chart</button>
+                <div class="row">
+                    <div class='m-auto'>
+                        <button id="updateButton" type="button" class="btn btn-primary">Update chart</button>
+                    </div>
+                </div>
+                <div class="row h4 p-0 my-2">
+                    <p class="mx-2 py-1">To hide or show line on the chart, click on the label above the chart.</p>
+                    <p class="mx-2 py-1">You can zoom horizontal axis o chart, by clicking left mouse button and moving mouse.</p>
+                </div>
+                <div class="chart-container">
+                    <button id="resetButton" type="button" class="btn warning mx-2 button-reset" data-toggle="tooltip" data-placement="top" title="You can zoom chart in horizontal axis by clicking left mouse button and moving mouse. Click this button to reset zoom.">Zoom reset</button>
+                    <canvas id="cryptocurrenciesChart"></canvas>
                 </div>
             </div>
-            <div class="row h4 p-0 my-2">
-                <p class="mx-2 py-1">To hide or show line on the chart, click on the label above the chart.</p>
-                <p class="mx-2 py-1">You can zoom horizontal axis o chart, by clicking left mouse button and moving mouse.</p>
-            </div>
-            <div class="chart-container">
-                <button id="resetButton" type="button" class="btn warning mx-2 button-reset" data-toggle="tooltip" data-placement="top" title="You can zoom chart in horizontal axis by clicking left mouse button and moving mouse. Click this button to reset zoom.">Zoom reset</button>
-                <canvas id="cryptocurrenciesChart"></canvas>
+            <div class="mt-5">
+                <h2 class="text-center">Trend analysis</h2>
+                <div id="trend-boxes">
+                    <div class="trend-box">                     <div class="arrow-container"><img src="img/arrowupgreen.svg" alt="Green up arrow"></div>             <div class="arrow-desription">             <p class="title">BTCUSD Growth - 2018-04-25</p>             <p class="description">ETHUSD started to grow and LTCUSD started to drop just after BTCUSD</p>                     </div>                 </div>
+                    <div class="trend-box">                     <div class="arrow-container"><img src="img/arrowupgreen.svg" alt="Green up arrow"></div>             <div class="arrow-desription">             <p class="title">BTCUSD Growth - 2018-04-25</p>             <p class="description">ETHUSD started to grow and LTCUSD started to drop just after BTCUSD</p>                     </div>                 </div>
+                </div>
             </div>
         </div>
-        <div class="mt-5">
-            <h2 class="text-center">Trend analysis</h2>
-            <div id="trend-boxes"></div>
-        </div>
-    </div>
     <script th:inline="javascript">
         /*<![CDATA[*/
         var minDateTime = /*[[${minDateTime}]]*/;

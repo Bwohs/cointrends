@@ -25,7 +25,6 @@ public class MainController {
 		
 		cryptocurrenciesService.checkIfCurrent();
 		
-		
 		model.addAttribute("minDateTime", cryptocurrenciesService.getMinDateTimeSpaceSep());
 		model.addAttribute("maxDateTime", cryptocurrenciesService.getBitcoinAverageAPIServerTimeSpaceSep());
 		

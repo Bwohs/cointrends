@@ -122,9 +122,8 @@ $(function () {
         var datetimeStartReplacedSpace = ReplaceSpaceInDateTime(datetimeStart);
         var datetimeEndReplacedSpace = ReplaceSpaceInDateTime(datetimeEnd);
 
-//        var apiUrl = "http://localhost:8080/kainos/api/historical/start/" + datetimeStartReplacedSpace + "/end/" + datetimeEndReplacedSpace;
-        var apiUrl = "/api/historical/start/" + datetimeStartReplacedSpace + "/end/" + datetimeEndReplacedSpace;
-        
+        var apiUrl = "http://localhost:8080/kainos/api/historical/start/" + datetimeStartReplacedSpace + "/end/" + datetimeEndReplacedSpace;
+
         var overlay = $('#overlay');
         $(overlay).show();
         
@@ -200,8 +199,7 @@ $(function () {
                 var selectedCryptocurrency = 'BTCUSD';
                 var selectedDependencies = dependenciesData[selectedCryptocurrency];
                 
-                console.log(selectedDependencies);
-                console.log('---------------------------');
+                $( "#trend-boxes" ).empty();
                 
                 for(var i = 0; i < selectedDependencies.length; i++){
                     var slope = selectedDependencies[i].slope;
@@ -214,25 +212,6 @@ $(function () {
                     
                 }
                 
-//                $.each(data.data, function(i, v) {
-//                    if (v.name.search(new RegExp(/peter/i)) != -1) {
-//                        alert(v.age);
-//                        return;
-//                    }
-//                });
-                
-//                for (var index = 0; index < cryptocurrenciesChart.data.datasets.length; ++index) {
-//                    if (typeof cryptocurrenciesChart.data.datasets[index].data[0] === 'object') {
-//                        console.log("if");
-//                        cryptocurrenciesChart.data.datasets[index].data.push({
-//                            x: newDate(cryptocurrenciesChart.data.datasets[index].data.length),
-//                            y: index+3,
-//                        });
-//                    }else {
-//                        console.log("not if"); 
-//                    }
-//                }
-
                 cryptocurrenciesChart.update();
                 
                 $(overlay).hide();
