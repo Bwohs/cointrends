@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import pl.bwohs.kainos.enums.CurrencyEnum;
 import pl.bwohs.kainos.enums.SlopeEnum;
 
-public class CurrencyDependencyModel implements ICurrency {
+public class CurrencyDependencyModel{
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime time;

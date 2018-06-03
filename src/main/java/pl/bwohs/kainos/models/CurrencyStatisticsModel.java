@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CurrencyStatisticsModel implements ICurrency {
+public class CurrencyStatisticsModel{
 	
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -32,7 +32,6 @@ import pl.bwohs.kainos.enums.SlopeEnum;
 import pl.bwohs.kainos.models.CurrencyStatisticsModel;
 import pl.bwohs.kainos.models.CurrencyDependencyModel;
 import pl.bwohs.kainos.models.CurrencyTrendModel;
-import pl.bwohs.kainos.models.ICurrency;
 import pl.bwohs.kainos.services.CryptocurrenciesService;
 import pl.bwohs.kainos.utilities.Json;
 import pl.bwohs.kainos.validators.DateTimeRangeFormValidator;
@@ -48,8 +47,6 @@ public class ApiController {
 	@Autowired
 	DateTimeRangeFormValidator DTRFValidator;
 	
-	
-	@CrossOrigin
 	@GetMapping(value="/historical/start/{start}/end/{end}")
 	public ResponseEntity<?> test(
 			@ModelAttribute DateTimeRangeForm DTRFrom,
@@ -61,19 +58,13 @@ public class ApiController {
 		    return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}else {
 			
-			
-//			Map<CurrencyEnum, List<CurrencyStatisticsModel>> limitedCurrenciesData = cryptocurrenciesService.getCryptocurrenciesFromTo(DTRFrom.getStart(), DTRFrom.getEnd());
-			
 			String jsonData= cryptocurrenciesService.getJsonData(DTRFrom.getStart(), DTRFrom.getEnd());
 	
 			JsonNode jsonObject = Json.stringToJsonObject(jsonData);
 			
-
-//			return new ResponseEntity<>(limitedCurrenciesData, HttpStatus.OK);
 			return new ResponseEntity<>(jsonObject, HttpStatus.OK);
 		}
-
-		
+	
 	}
 	
 }

@@ -28,7 +28,6 @@ public class MainController {
 		model.addAttribute("minDateTime", cryptocurrenciesService.getMinDateTimeSpaceSep());
 		model.addAttribute("maxDateTime", cryptocurrenciesService.getBitcoinAverageAPIServerTimeSpaceSep());
 		
-		
 		return "home";
 	}
 

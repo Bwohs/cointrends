@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import pl.bwohs.kainos.enums.SlopeEnum;
 
-public class CurrencyTrendModel implements ICurrency {
+public class CurrencyTrendModel{
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime t1;

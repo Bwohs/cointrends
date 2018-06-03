@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,18 @@ import pl.bwohs.kainos.models.CurrencyStatisticsModel;
 @Repository
 public class BitcoinAverageDAO {
 	
+	@Value("${bitcoinaverage.api.history1}")
+	private String apiUrlHistory1;
+	
+	@Value("${bitcoinaverage.api.history2}")
+	private String apiUrlHistory2;
+	
+	@Value("${bitcoinaverage.api.serverTime}")
+	private String apiUrlServerTime;
+	
 	public List<CurrencyStatisticsModel> getCurrencyHistoricalData(CurrencyEnum currency){
 		
-		String urlRequest = "https://apiv2.bitcoinaverage.com/indices/global/history/" + currency + "?period=alltime&format=json";
+		String urlRequest = apiUrlHistory1 + currency + apiUrlHistory2;
 		
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<CurrencyStatisticsModel>> response =
@@ -34,7 +44,7 @@ public class BitcoinAverageDAO {
 	
 	public LocalDateTime getServerTime() {
 		
-		String urlRequest = "https://apiv2.bitcoinaverage.com/constants/time";
+		String urlRequest = apiUrlServerTime;
 		
 		RestTemplate restTemplate = new RestTemplate();
 		

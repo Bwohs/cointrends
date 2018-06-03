@@ -30,7 +30,6 @@ import pl.bwohs.kainos.enums.SlopeEnum;
 import pl.bwohs.kainos.models.CurrencyStatisticsModel;
 import pl.bwohs.kainos.models.CurrencyDependencyModel;
 import pl.bwohs.kainos.models.CurrencyTrendModel;
-import pl.bwohs.kainos.models.ICurrency;
 import pl.bwohs.kainos.utilities.Json;
 
 @Service
@@ -81,9 +80,7 @@ public class CryptocurrenciesService {
 		Map<CurrencyEnum,List<CurrencyTrendModel>> trendsResult = new HashMap<>();
 				
 		cryptocurrencies.forEach((key,value) -> {
-//			System.out.println("Key: " + key);
 			trendsResult.put(key, calculateTrendLines(value,start,end));
-//			System.out.println("Key end -----------------------------");
 		});
 				
 		return trendsResult;
@@ -96,12 +93,9 @@ public class CryptocurrenciesService {
 		
 		List<CurrencyTrendModel> trendLinesResult = new LinkedList<>();
 		
-//		System.out.println("\tStart scope: " + startScope + ", end scope: " + endScope);
-		
 		LocalDateTime end = endScope;
 		LocalDateTime start = end.minusSeconds(trendTimespan);
 		while(start.isAfter(startScope) || start.isEqual(startScope)) {
-//			System.out.println("\tStart: " + start + ", end: " + end);
 
 			CurrencyTrendModel trendLine = calculateTrendLine(value,start,end);
 			if (trendLine != null) {
@@ -144,18 +138,12 @@ public class CryptocurrenciesService {
 		if (a > 0) slope = SlopeEnum.rising;
 		else if(a < 0) slope = SlopeEnum.falling;
 		else slope = SlopeEnum.constant;
-		
-//		System.out.println("a2: " + a + ", b2: " + b);
 
 		double y1 = simpleRegression.predict(start.toEpochSecond(offset));
 		double y2 = simpleRegression.predict(end.toEpochSecond(offset));
 
 		CurrencyTrendModel trendLine = new CurrencyTrendModel(start, end, BigDecimal.valueOf(y1), BigDecimal.valueOf(y2), slope, min);
-		
-//		System.out.println("\t\tt1: " + list.get(list.size()-1).getTime() + ", value: " + list.get(list.size()-1).getAverage() + ", t2: " + list.get(0).getTime() + ", value: " + list.get(0).getAverage());
-//		System.out.println(trendLine.toString());
-		
-//		System.out.println("Liczba pomiarów do regresji liniowej: " + list.size());
+
 		return trendLine;
 	}
 	
@@ -171,9 +159,7 @@ public class CryptocurrenciesService {
 	
 	private List<CurrencyDependencyModel> calculateCryptocurrencyDependencies(CurrencyEnum key, Map<CurrencyEnum,List<CurrencyTrendModel>> trends){
 		List<CurrencyDependencyModel> cryptocurrencyDependencies = new LinkedList<>();
-		
-//		System.out.println("\tKey: " + key);
-		
+
 		trends.get(key).forEach((item) -> {
 			
 			CurrencyDependencyModel cryptocurrencyDependency = calculateCryptocurrencyDependency(item,
@@ -185,9 +171,6 @@ public class CryptocurrenciesService {
 				cryptocurrencyDependencies.add(cryptocurrencyDependency);
 			}
 		});
-		
-		
-		
 		
 		return cryptocurrencyDependencies;
 	}
@@ -204,7 +187,6 @@ public class CryptocurrenciesService {
 				effects.put(key, effect.get().getSlope());
 			}
 			
-
 		});
 		
 		CurrencyDependencyModel currencyDependency = new CurrencyDependencyModel(item.getOldestMeasureTime(), item.getSlope(), effects);
@@ -301,9 +283,6 @@ public class CryptocurrenciesService {
 		
 		jsonAllStringBuilder.append("}");
 		
-//		System.out.println(jsonAllStringBuilder.toString());
-		
-	
 		return jsonAllStringBuilder.toString();
 		
 	}
