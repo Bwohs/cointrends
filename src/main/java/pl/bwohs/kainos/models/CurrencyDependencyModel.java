@@ -17,10 +17,6 @@ public class CurrencyDependencyModel implements ICurrency {
 	private SlopeEnum slope;
 	private Map<CurrencyEnum, SlopeEnum> effects = new HashMap<>();
 	
-	public CurrencyDependencyModel() {
-		super();
-	}
-	
 	
 	
 	public CurrencyDependencyModel(LocalDateTime time, SlopeEnum slope, Map<CurrencyEnum, SlopeEnum> effect) {
@@ -33,21 +29,15 @@ public class CurrencyDependencyModel implements ICurrency {
 	public LocalDateTime getTime() {
 		return time;
 	}
-	public void setTime(LocalDateTime time) {
-		this.time = time;
-	}
+
 	public SlopeEnum getSlope() {
 		return slope;
 	}
-	public void setSlope(SlopeEnum slope) {
-		this.slope = slope;
-	}
+
 	public Map<CurrencyEnum, SlopeEnum> getEffects() {
 		return effects;
 	}
-	public void setEffects(Map<CurrencyEnum, SlopeEnum> effects) {
-		this.effects = effects;
-	}
+
 	
 	
 

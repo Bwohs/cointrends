@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -102,8 +103,10 @@ public class CryptocurrenciesService {
 		while(start.isAfter(startScope) || start.isEqual(startScope)) {
 //			System.out.println("\tStart: " + start + ", end: " + end);
 
-			
-			trendLinesResult.add(calculateTrendLine(value,start,end));
+			CurrencyTrendModel trendLine = calculateTrendLine(value,start,end);
+			if (trendLine != null) {
+				trendLinesResult.add(trendLine);
+			}
 
 			end = start;
 			start = end.minusSeconds(trendTimespan);
@@ -121,6 +124,8 @@ public class CryptocurrenciesService {
 		List<CurrencyStatisticsModel> list = value.stream()
 				.filter( p -> (p.getTime().isAfter(start) && p.getTime().isBefore(end)) || p.getTime().isEqual(end))
 				.collect(Collectors.toList());
+		
+		if(list.size()<2) return null;
 		
 		LocalDateTime min = list.stream().map(x -> x.getTime()).min(LocalDateTime::compareTo).get();
 
@@ -150,7 +155,7 @@ public class CryptocurrenciesService {
 //		System.out.println("\t\tt1: " + list.get(list.size()-1).getTime() + ", value: " + list.get(list.size()-1).getAverage() + ", t2: " + list.get(0).getTime() + ", value: " + list.get(0).getAverage());
 //		System.out.println(trendLine.toString());
 		
-		System.out.println("Liczba pomiarów do regresji liniowej: " + list.size());
+//		System.out.println("Liczba pomiarów do regresji liniowej: " + list.size());
 		return trendLine;
 	}
 	
@@ -169,12 +174,16 @@ public class CryptocurrenciesService {
 		
 //		System.out.println("\tKey: " + key);
 		
-		trends.get(key).forEach((item)->{
-			cryptocurrencyDependencies.add(calculateCryptocurrencyDependency(item,
-					trends.entrySet().stream()
-					.filter( x -> !(x.getKey().equals(key)))
-					.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()))));
+		trends.get(key).forEach((item) -> {
 			
+			CurrencyDependencyModel cryptocurrencyDependency = calculateCryptocurrencyDependency(item,
+											trends.entrySet().stream()
+											.filter( x -> !(x.getKey().equals(key)))
+											.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue())));
+			
+			if(!cryptocurrencyDependency.getEffects().isEmpty()) {
+				cryptocurrencyDependencies.add(cryptocurrencyDependency);
+			}
 		});
 		
 		
@@ -187,20 +196,18 @@ public class CryptocurrenciesService {
 
 		Map<CurrencyEnum, SlopeEnum> effects = new HashMap<>();
 		trendsLimited.forEach((key,value)->{
+			
+			Optional<CurrencyTrendModel> effect = value.stream()
+													.filter( x -> x.getOldestMeasureTime().isEqual(item.getOldestMeasureTime()))
+													.findAny();
+			if (effect.isPresent()) {
+				effects.put(key, effect.get().getSlope());
+			}
+			
 
-			effects.put(key, value.stream()
-									.filter( x -> x.getOldestMeasureTime().isEqual(item.getOldestMeasureTime()))
-									.findAny()
-									.get()
-									.getSlope()
-						);
 		});
 		
-		CurrencyDependencyModel currencyDependency = new CurrencyDependencyModel();
-		
-		currencyDependency.setTime(item.getOldestMeasureTime());
-		currencyDependency.setSlope(item.getSlope());
-		currencyDependency.setEffects(effects);
+		CurrencyDependencyModel currencyDependency = new CurrencyDependencyModel(item.getOldestMeasureTime(), item.getSlope(), effects);
 		
 		return currencyDependency;
 	}
