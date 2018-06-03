@@ -122,8 +122,9 @@ $(function () {
         var datetimeStartReplacedSpace = ReplaceSpaceInDateTime(datetimeStart);
         var datetimeEndReplacedSpace = ReplaceSpaceInDateTime(datetimeEnd);
 
-        var apiUrl = "http://localhost:8080/kainos/api/historical/start/" + datetimeStartReplacedSpace + "/end/" + datetimeEndReplacedSpace;
-
+//        var apiUrl = "http://localhost:8080/kainos/api/historical/start/" + datetimeStartReplacedSpace + "/end/" + datetimeEndReplacedSpace;
+        var apiUrl = "/api/historical/start/" + datetimeStartReplacedSpace + "/end/" + datetimeEndReplacedSpace;
+        
         var overlay = $('#overlay');
         $(overlay).show();
         
