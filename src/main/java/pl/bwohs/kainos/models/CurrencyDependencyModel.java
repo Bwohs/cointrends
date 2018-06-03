@@ -10,22 +10,24 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import pl.bwohs.kainos.enums.CurrencyEnum;
 import pl.bwohs.kainos.enums.SlopeEnum;
 
-public class CurrencyTrendDependencyModel implements ICurrency {
+public class CurrencyDependencyModel implements ICurrency {
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime time;
 	private SlopeEnum slope;
-	private Map<CurrencyEnum, SlopeEnum> effect = new HashMap<>();
+	private Map<CurrencyEnum, SlopeEnum> effects = new HashMap<>();
+	
+	public CurrencyDependencyModel() {
+		super();
+	}
 	
 	
 	
-	
-	
-	public CurrencyTrendDependencyModel(LocalDateTime time, SlopeEnum slope, Map<CurrencyEnum, SlopeEnum> effect) {
+	public CurrencyDependencyModel(LocalDateTime time, SlopeEnum slope, Map<CurrencyEnum, SlopeEnum> effect) {
 		super();
 		this.time = time;
 		this.slope = slope;
-		this.effect = effect;
+		this.effects = effect;
 	}
 	
 	public LocalDateTime getTime() {
@@ -40,11 +42,11 @@ public class CurrencyTrendDependencyModel implements ICurrency {
 	public void setSlope(SlopeEnum slope) {
 		this.slope = slope;
 	}
-	public Map<CurrencyEnum, SlopeEnum> getEffect() {
-		return effect;
+	public Map<CurrencyEnum, SlopeEnum> getEffects() {
+		return effects;
 	}
-	public void setEffect(Map<CurrencyEnum, SlopeEnum> effect) {
-		this.effect = effect;
+	public void setEffects(Map<CurrencyEnum, SlopeEnum> effects) {
+		this.effects = effects;
 	}
 	
 	

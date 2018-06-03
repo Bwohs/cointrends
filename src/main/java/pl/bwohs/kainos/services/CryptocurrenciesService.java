@@ -27,7 +27,7 @@ import pl.bwohs.kainos.dao.BitcoinAverageDAO;
 import pl.bwohs.kainos.enums.CurrencyEnum;
 import pl.bwohs.kainos.enums.SlopeEnum;
 import pl.bwohs.kainos.models.CurrencyStatisticsModel;
-import pl.bwohs.kainos.models.CurrencyTrendDependencyModel;
+import pl.bwohs.kainos.models.CurrencyDependencyModel;
 import pl.bwohs.kainos.models.CurrencyTrendModel;
 import pl.bwohs.kainos.models.ICurrency;
 import pl.bwohs.kainos.utilities.Json;
@@ -44,10 +44,7 @@ public class CryptocurrenciesService {
 	private LocalDateTime lastDataTime;
 	private Map<CurrencyEnum,List<CurrencyStatisticsModel>> cryptocurrencies = new HashMap<>();
 	
-	private Map<CurrencyEnum,List<CurrencyTrendModel>> trends = new HashMap<>();
-	private Map<CurrencyEnum,List<CurrencyTrendDependencyModel>> trendDependencies = new HashMap<>();
 	
-	private Map<String,Map<CurrencyEnum,List<ICurrency>>> all = new HashMap<>();
 	
 	@Value("#{${historical.data.interval} * ${historical.data.intervalFactor}}")
 	private long historicalDataInterval;
@@ -80,7 +77,6 @@ public class CryptocurrenciesService {
 	}
 	
 	private Map<CurrencyEnum,List<CurrencyTrendModel>> calculateTrends(LocalDateTime start, LocalDateTime end) {
-		trends.clear();
 		Map<CurrencyEnum,List<CurrencyTrendModel>> trendsResult = new HashMap<>();
 				
 		cryptocurrencies.forEach((key,value) -> {
@@ -123,8 +119,11 @@ public class CryptocurrenciesService {
 			LocalDateTime end) {
 		
 		List<CurrencyStatisticsModel> list = value.stream()
-				.filter( p -> (p.getTime().isAfter(start) && p.getTime().isBefore(end)) || p.getTime().isEqual(start) || p.getTime().isEqual(end))
+				.filter( p -> (p.getTime().isAfter(start) && p.getTime().isBefore(end)) || p.getTime().isEqual(end))
 				.collect(Collectors.toList());
+		
+		LocalDateTime min = list.stream().map(x -> x.getTime()).min(LocalDateTime::compareTo).get();
+
 		
 		ZoneOffset offset = OffsetDateTime.now().getOffset();
 			
@@ -146,13 +145,64 @@ public class CryptocurrenciesService {
 		double y1 = simpleRegression.predict(start.toEpochSecond(offset));
 		double y2 = simpleRegression.predict(end.toEpochSecond(offset));
 
-		CurrencyTrendModel trendLine = new CurrencyTrendModel(start, end, BigDecimal.valueOf(y1), BigDecimal.valueOf(y2), slope);
+		CurrencyTrendModel trendLine = new CurrencyTrendModel(start, end, BigDecimal.valueOf(y1), BigDecimal.valueOf(y2), slope, min);
 		
 //		System.out.println("\t\tt1: " + list.get(list.size()-1).getTime() + ", value: " + list.get(list.size()-1).getAverage() + ", t2: " + list.get(0).getTime() + ", value: " + list.get(0).getAverage());
 //		System.out.println(trendLine.toString());
 		
 		System.out.println("Liczba pomiarów do regresji liniowej: " + list.size());
 		return trendLine;
+	}
+	
+	private Map<CurrencyEnum,List<CurrencyDependencyModel>> calculateCryptocurrenciesDependencies(Map<CurrencyEnum,List<CurrencyTrendModel>> trends){
+		Map<CurrencyEnum,List<CurrencyDependencyModel>> cryptocurrenciesDependencies = new HashMap<>();
+		
+		trends.forEach((key,value)->{
+			cryptocurrenciesDependencies.put(key, calculateCryptocurrencyDependencies(key,trends));
+		});
+		
+		return cryptocurrenciesDependencies;
+	}
+	
+	private List<CurrencyDependencyModel> calculateCryptocurrencyDependencies(CurrencyEnum key, Map<CurrencyEnum,List<CurrencyTrendModel>> trends){
+		List<CurrencyDependencyModel> cryptocurrencyDependencies = new LinkedList<>();
+		
+//		System.out.println("\tKey: " + key);
+		
+		trends.get(key).forEach((item)->{
+			cryptocurrencyDependencies.add(calculateCryptocurrencyDependency(item,
+					trends.entrySet().stream()
+					.filter( x -> !(x.getKey().equals(key)))
+					.collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()))));
+			
+		});
+		
+		
+		
+		
+		return cryptocurrencyDependencies;
+	}
+	
+	private CurrencyDependencyModel calculateCryptocurrencyDependency(CurrencyTrendModel item, Map<CurrencyEnum,List<CurrencyTrendModel>> trendsLimited) {
+
+		Map<CurrencyEnum, SlopeEnum> effects = new HashMap<>();
+		trendsLimited.forEach((key,value)->{
+
+			effects.put(key, value.stream()
+									.filter( x -> x.getOldestMeasureTime().isEqual(item.getOldestMeasureTime()))
+									.findAny()
+									.get()
+									.getSlope()
+						);
+		});
+		
+		CurrencyDependencyModel currencyDependency = new CurrencyDependencyModel();
+		
+		currencyDependency.setTime(item.getOldestMeasureTime());
+		currencyDependency.setSlope(item.getSlope());
+		currencyDependency.setEffects(effects);
+		
+		return currencyDependency;
 	}
 	
 //**********************************************************************************
@@ -201,7 +251,7 @@ public class CryptocurrenciesService {
 		
 	}
 	
-	public Map<CurrencyEnum, List<CurrencyStatisticsModel>> getCryptocurrenciesFromTo(LocalDateTime start, LocalDateTime end) {
+	private Map<CurrencyEnum, List<CurrencyStatisticsModel>> getCryptocurrenciesFromTo(LocalDateTime start, LocalDateTime end) {
 		Map<CurrencyEnum, List<CurrencyStatisticsModel>> results = new HashMap<>();
 		
 
@@ -212,28 +262,37 @@ public class CryptocurrenciesService {
 					.collect(Collectors.toList()));
 		});
 
-		trends = calculateTrends(start,end);
 		
 		return results;
 	}
 	
-	
+
 	
 
 
 	public String getJsonData(LocalDateTime start, LocalDateTime end) {
 		
-		String jsonDataString = Json.objectToJson(this.getCryptocurrenciesFromTo(start, end));
-		String jsonTrendString = Json.objectToJson(this.calculateTrends(start, end));
+		this.checkIfCurrent();
+		Map<CurrencyEnum, List<CurrencyStatisticsModel>> cryptocurrenciesLimited = this.getCryptocurrenciesFromTo(start, end);
+		Map<CurrencyEnum,List<CurrencyTrendModel>> trends = this.calculateTrends(start, end);
+		Map<CurrencyEnum,List<CurrencyDependencyModel>> cryptocurrenciesDependencies = this.calculateCryptocurrenciesDependencies(trends);
+		
+		String jsonDataString = Json.objectToJson(cryptocurrenciesLimited);
+		String jsonTrendString = Json.objectToJson(trends);
+		String jsonCryptocurrenciesDependenciesString = Json.objectToJson(cryptocurrenciesDependencies);
 		
 		StringBuilder jsonAllStringBuilder = new StringBuilder("{");
 		
-		jsonAllStringBuilder.append("\"DATA\" : ");
+		jsonAllStringBuilder.append("\"CRYPTOCURRENCIES\" : ");
 		jsonAllStringBuilder.append(jsonDataString);
 		jsonAllStringBuilder.append(",");
 		
 		jsonAllStringBuilder.append("\"TRENDS\" : ");
 		jsonAllStringBuilder.append(jsonTrendString);
+		jsonAllStringBuilder.append(",");
+		
+		jsonAllStringBuilder.append("\"DEPENDENCIES\" : ");
+		jsonAllStringBuilder.append(jsonCryptocurrenciesDependenciesString);
 		
 		jsonAllStringBuilder.append("}");
 		

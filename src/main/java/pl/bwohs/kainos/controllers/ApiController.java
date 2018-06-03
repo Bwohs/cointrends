@@ -30,7 +30,7 @@ import pl.bwohs.kainos.dto.DateTimeRangeForm;
 import pl.bwohs.kainos.enums.CurrencyEnum;
 import pl.bwohs.kainos.enums.SlopeEnum;
 import pl.bwohs.kainos.models.CurrencyStatisticsModel;
-import pl.bwohs.kainos.models.CurrencyTrendDependencyModel;
+import pl.bwohs.kainos.models.CurrencyDependencyModel;
 import pl.bwohs.kainos.models.CurrencyTrendModel;
 import pl.bwohs.kainos.models.ICurrency;
 import pl.bwohs.kainos.services.CryptocurrenciesService;
@@ -51,27 +51,6 @@ public class ApiController {
 	
 	@CrossOrigin
 	@GetMapping(value="/historical/start/{start}/end/{end}")
-	public ResponseEntity<?> getCurrenciesHistoricalData(
-			@ModelAttribute DateTimeRangeForm DTRFrom,
-			BindingResult result){
-
-		DTRFValidator.validate(DTRFrom, result);
-
-		if (result.hasErrors()) {
-		    return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
-		}else {
-			cryptocurrenciesService.checkIfCurrent();
-			
-			Map<CurrencyEnum, List<CurrencyStatisticsModel>> limitedCurrenciesData = cryptocurrenciesService.getCryptocurrenciesFromTo(DTRFrom.getStart(), DTRFrom.getEnd());
-			
-
-			return new ResponseEntity<>(limitedCurrenciesData, HttpStatus.OK);
-		}
-		
-	}
-	
-	@CrossOrigin
-	@GetMapping(value="/historical1/start/{start}/end/{end}")
 	public ResponseEntity<?> test(
 			@ModelAttribute DateTimeRangeForm DTRFrom,
 			BindingResult result) {
@@ -81,7 +60,7 @@ public class ApiController {
 		if (result.hasErrors()) {
 		    return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
 		}else {
-			cryptocurrenciesService.checkIfCurrent();
+			
 			
 //			Map<CurrencyEnum, List<CurrencyStatisticsModel>> limitedCurrenciesData = cryptocurrenciesService.getCryptocurrenciesFromTo(DTRFrom.getStart(), DTRFrom.getEnd());
 			
